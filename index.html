@@ -84,7 +84,7 @@
             }
 
             .tile[data-value="256"] {
-                background: #c7ceea;
+                background: #a88fac;
             }
 
             .tile[data-value="512"] {
@@ -180,6 +180,41 @@
             color: #ffffff;
             border: 2px solid white;
         }
+        .toast button {
+            margin-top: 15px;
+            padding: 12px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #ff7b72; 
+            color: white;
+            border: none;
+            border-radius: 12px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+        }
+
+            .toast button:hover {
+                background-color: #ff3f2a; 
+                transform: scale(1.1); 
+            }
+
+            .toast button:active {
+                transform: scale(1); 
+            }
+
+        .dark-mode .toast button {
+            background-color: #5a4a42; 
+            color: white; /
+            
+        }
+
+            .dark-mode .toast button:hover {
+                background-color: #7c5c4d; 
+            }
+
+            .dark-mode .toast button:active {
+                transform: scale(1);
+            }
 
         .restart-btn {
             margin-top: 10px;
@@ -209,6 +244,7 @@
             background: #444;
             color: white;
         }
+       
     </style>
 </head>
 <body>
@@ -303,6 +339,38 @@
                 move(event.key.replace("Arrow", "").toLowerCase());
             }
         });
+        function checkGameOver() {
+            if (!tiles.includes(0)) {
+                for (let i = 0; i < 16; i++) {
+                    if ((i % 4 < 3 && tiles[i] === tiles[i + 1]) || (i < 12 && tiles[i] === tiles[i + 4])) {
+                        return false;
+                    }
+                }
+                toast.style.display = "block";
+                toast.innerHTML = `
+            <p>Game Over!</p>
+            <button onclick="restartGame()">Új játék</button>
+        `;
+                return true;
+            }
+            if (tiles.includes(2048)) {
+                toast.style.display = "block";
+                toast.innerHTML = `
+            <p>Gratulálok, nyertél!</p>
+            <button onclick="restartGame()">Új játék</button>
+        `;
+                return true;
+            }
+            return false;
+        }
+
+        function restartGame() {
+            tiles = Array(16).fill(0);
+            addRandomTile();
+            addRandomTile();
+            toast.style.display = "none";
+            drawBoard();
+        }
 
         restartGame();
         function toggleDarkMode() {
